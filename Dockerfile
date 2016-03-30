@@ -1,9 +1,8 @@
-FROM registry.access.redhat.com/jboss-eap-6/eap-openshift:6.4
+FROM registry.access.redhat.com/jboss-eap-6/eap64-openshift
 EXPOSE 8080 8888
 USER 0
-ENV JBOSS_HOME /opt/jboss/jboss-eap-6.4
-RUN $JBOSS_HOME/bin/add-user.sh jboss TigoJboss2016! --silent
-RUN curl https://raw.githubusercontent.com/VeerMuchandi/ps/master/deployments/ROOT.war -o $JBOSS_HOME/standalone/deployments/ROOT.war
+RUN /opt/jboss/jboss-eap-6.4/bin/add-user.sh jboss TigoJboss2016! --silent
+RUN curl https://raw.githubusercontent.com/VeerMuchandi/ps/master/deployments/ROOT.war -o /opt/jboss/jboss-eap-6.4/standalone/deployments/ROOT.war
 
 #FROM jboss/base-jdk:7
 
