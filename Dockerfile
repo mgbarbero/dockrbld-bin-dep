@@ -1,5 +1,10 @@
 FROM registry.access.redhat.com/jboss-eap-6/eap64-openshift
-USER root
+RUN export USER_ID=$(id -u)
+RUN export GROUP_ID=$(id -g)
+RUN envsubst < ${HOME}/passwd.template > /tmp/passwd
+RUN export LD_PRELOAD=libnss_wrapper.so
+RUN export NSS_WRAPPER_PASSWD=/tmp/passwd
+RUN export NSS_WRAPPER_GROUP=/etc/group
 EXPOSE 8080 8888
 
 #RUN /opt/jboss/jboss-eap-6.4/bin/add-user.sh jboss TigoJboss2016! --silent
