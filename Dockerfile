@@ -1,14 +1,23 @@
-FROM registry.access.redhat.com/jboss-eap-6/eap64-openshift
-RUN yum -y install nss_wrapper gettext
-ADD passwd.template ${HOME}
-RUN export USER_ID=$(id -u)
-RUN export GROUP_ID=$(id -g)
-RUN envsubst < ${HOME}/passwd.template > /tmp/passwd
-RUN export LD_PRELOAD=libnss_wrapper.so
-RUN export NSS_WRAPPER_PASSWD=/tmp/passwd
-RUN export NSS_WRAPPER_GROUP=/etc/group
+FROM registry.access.redhat.com/jboss-eap-6/eap-openshift:6.4
 USER root
+RUN chmod 644 /etc/nsswitch.conf
+RUN adduser jboss --uid 1000 --home /home/jboss --disabled-password
+USER jboss
 EXPOSE 8080 8888
+RUN curl https://raw.githubusercontent.com/VeerMuchandi/ps/master/deployments/ROOT.war -o $JBOSS_HOME/standalone/deployments/ROOT.war
+
+
+#FROM registry.access.redhat.com/jboss-eap-6/eap64-openshift
+#RUN yum -y install nss_wrapper gettext
+#ADD passwd.template ${HOME}
+#RUN export USER_ID=$(id -u)
+#RUN export GROUP_ID=$(id -g)
+#RUN envsubst < ${HOME}/passwd.template > /tmp/passwd
+#RUN export LD_PRELOAD=libnss_wrapper.so
+#RUN export NSS_WRAPPER_PASSWD=/tmp/passwd
+#RUN export NSS_WRAPPER_GROUP=/etc/group
+#USER root
+#EXPOSE 8080 8888
 
 #RUN /opt/jboss/jboss-eap-6.4/bin/add-user.sh jboss TigoJboss2016! --silent
 #RUN curl https://raw.githubusercontent.com/VeerMuchandi/ps/master/deployments/ROOT.war -o /opt/jboss/jboss-eap-6.4/standalone/deployments/ROOT.war
